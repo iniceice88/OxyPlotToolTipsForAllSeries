@@ -1,0 +1,53 @@
+﻿<Window
+    x:Class="OxyplotToolTipsForAllLines.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:OxyplotToolTipsForAllLines.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:OxyplotToolTipsForAllLines"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:oxy="http://oxyplot.org/wpf"
+    Title="OxyPlot ToolTipsForAllLines"
+    Width="800"
+    Height="600"
+    mc:Ignorable="d">
+    <Window.DataContext>
+        <local:MainViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <converters:SeriesColorToBrushConverter x:Key="SeriesColorToBrushConverter" />
+    </Window.Resources>
+    <Grid>
+        <oxy:PlotView Name="PlotView" Model="{Binding Model}">
+            <oxy:PlotView.DefaultTrackerTemplate>
+                <ControlTemplate>
+                    <oxy:TrackerControl d:DataContext="{d:DesignInstance Type=local:AllLinesTrackerHitResult}" HorizontalLineVisibility="Collapsed" LineExtents="{Binding PlotModel.PlotArea}" Position="{Binding Position}">
+                        <oxy:TrackerControl.Background>
+                            <LinearGradientBrush EndPoint="0,1">
+                                <GradientStop Color="#f0e0e0ff" />
+                                <GradientStop Offset="1" Color="#f0ffffff" />
+                            </LinearGradientBrush>
+                        </oxy:TrackerControl.Background>
+                        <oxy:TrackerControl.Content>
+                            <StackPanel Margin="8">
+                                <TextBlock HorizontalAlignment="Center" FontSize="20" Text="{Binding DataPoint.X, StringFormat=0.##}" />
+                                <ItemsControl Margin="0,8,0,0" ItemsSource="{Binding SeriesTrackerHitResults}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="8,2" Orientation="Horizontal">
+                                                <Ellipse Width="12" Height="12" Stroke="{Binding Series, Converter={StaticResource SeriesColorToBrushConverter}}" StrokeThickness="2" />
+                                                <TextBlock Margin="4,0,0,0" Text="{Binding Series.Title}" />
+                                                <TextBlock Text=" : " />
+                                                <TextBlock Text="{Binding DataPoint.Y, StringFormat=0.##}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </oxy:TrackerControl.Content>
+                    </oxy:TrackerControl>
+                </ControlTemplate>
+            </oxy:PlotView.DefaultTrackerTemplate>
+        </oxy:PlotView>
+    </Grid>
+</Window>
